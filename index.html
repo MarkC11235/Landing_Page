@@ -1,9 +1,96 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Landing Page</title>
-    </head>
+<head>
+    <title>Landing Page</title>
+    <style>
+        :root {
+            --rows: 3;
+            --columns: 3;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-rows: repeat(var(--rows), 10em);
+            grid-template-columns: repeat(var(--columns), 10em);
+            gap: 1em;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: .5em solid #ccc;
+            padding: .5em;
+            border-radius: 1em;
+        }
+
+        .grid-item img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="grid-item">
+            <a href="#"><img src="image1.jpg" alt="Image 1"></a>
+        </div>
+        <div class="grid-item">
+            <a href="#"><img src="image2.jpg" alt="Image 2"></a>
+        </div>
+        <div class="grid-item">
+            <a href="#"><img src="image3.jpg" alt="Image 3"></a>
+        </div>
+        <!-- Add more grid items as needed -->
+    </div>
+</body>
+
+<script>
+    // make an array of all the images
+    const images = [
+        './images/canvas.png',
+        './images/github.png',
+        './images/google_drive.png',
+    ];
+
+    // an array of all the links
+    const links = [
+        'https://canvas.ou.edu/',
+        'https://github.com',
+        'https://drive.google.com',
+    ];
+
+    // get all the grid items
+    const gridItems = document.querySelectorAll('.grid-item');
+
+    // loop through each grid item
+    gridItems.forEach((gridItem, index) => {
+        // create an image element
+        const img = gridItem.querySelector('img');
+        // set the src attribute of the image element
+        img.src = images[index];
+        // set the alt attribute of the image element
+        img.alt = `Image ${index + 1}`;
+
+
+        // create an anchor element
+        const a = gridItem.querySelector('a');
+        // set the href attribute of the anchor element
+        a.href = links[index];
+    });
     
-    <body>
-        <center>Hello World!</center>
-    </body>
+</script>
+
 </html>
