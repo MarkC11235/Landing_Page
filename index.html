@@ -1,96 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Landing Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Home Dashboard</title>
     <style>
-        :root {
-            --rows: 3;
-            --columns: 3;
-        }
-
+        /* Previous CSS remains the same, just adding overflow-wrap */
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #121212;
+            color: rgba(255, 255, 255, 0.9);
             margin: 0;
+            padding: 20px;
+            min-height: 100vh;
         }
 
-        .grid-container {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-grid {
             display: grid;
-            grid-template-rows: repeat(var(--rows), 10em);
-            grid-template-columns: repeat(var(--columns), 10em);
-            gap: 1em;
-            justify-content: center;
-            align-items: center;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 25px;
+            padding: 30px;
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            backdrop-filter: blur(4px);
         }
 
-        .grid-item {
+        .logo-link {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            border: .5em solid #ccc;
-            padding: .5em;
-            border-radius: 1em;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.2s ease;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            overflow-wrap: anywhere;
         }
 
-        .grid-item img {
-            max-width: 100%;
-            height: auto;
+        .logo-link:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.05);
         }
 
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 8px;
+            filter: brightness(0) invert(0.9);
+            opacity: 0.9;
+        }
+
+        .time-date {
+            font-size: 2.8em;
+            text-align: center;
+            margin: 60px 0;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            letter-spacing: 1px;
+        }
+
+        #date {
+            font-size: 0.6em;
+            margin-top: 10px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
     </style>
 </head>
 <body>
-    <div class="grid-container">
-        <div class="grid-item">
-            <a href="#"><img src="image1.jpg" alt="Image 1"></a>
+    <div class="container">
+        <div class="time-date">
+            <div id="time"></div>
+            <div id="date"></div>
         </div>
-        <div class="grid-item">
-            <a href="#"><img src="image2.jpg" alt="Image 2"></a>
+
+        <div class="logo-grid">
+            <a href="https://canvas.instructure.com" class="logo-link">
+                <img src="https://www.instructure.com/sites/default/files/image/2021-12/canvas-favicon.svg" class="logo-img">
+                Canvas
+            </a>
+            <a href="https://github.com" class="logo-link">
+                <img src="https://github.githubassets.com/favicons/favicon-dark.png" class="logo-img">
+                GitHub
+            </a>
+            <a href="https://youtube.com" class="logo-link">
+                <img src="https://www.youtube.com/s/desktop/dcdfd5b3/img/favicon_144x144.png" class="logo-img">
+                YouTube
+            </a>
+            <a href="https://mail.google.com" class="logo-link">
+                <img src="https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_512dp.png" class="logo-img">
+                Gmail
+            </a>
+            <a href="https://outlook.office.com" class="logo-link">
+                <img src="https://res-1.cdn.office.net/assets/mail/purple/office365/outlook_64x64.png" class="logo-img">
+                Outlook
+            </a>
+            <a href="https://www.deepseek.com" class="logo-link">
+                <img src="https://www.deepseek.com/favicon.ico" class="logo-img">
+                DeepSeek
+            </a>
+            <a href="https://chat.openai.com" class="logo-link">
+                <img src="https://static.vecteezy.com/system/resources/previews/021/608/790/non_2x/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg" class="logo-img">
+                ChatGPT
+            </a>
         </div>
-        <div class="grid-item">
-            <a href="#"><img src="image3.jpg" alt="Image 3"></a>
-        </div>
-        <!-- Add more grid items as needed -->
     </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('date').textContent = now.toLocaleDateString(undefined, {weekday: 'long', month: 'long', day: 'numeric'});
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 </body>
-
-<script>
-    // make an array of all the images
-    const images = [
-        './images/canvas.png',
-        './images/github.png',
-        './images/google_drive.png',
-    ];
-
-    // an array of all the links
-    const links = [
-        'https://canvas.ou.edu/',
-        'https://github.com',
-        'https://drive.google.com',
-    ];
-
-    // get all the grid items
-    const gridItems = document.querySelectorAll('.grid-item');
-
-    // loop through each grid item
-    gridItems.forEach((gridItem, index) => {
-        // create an image element
-        const img = gridItem.querySelector('img');
-        // set the src attribute of the image element
-        img.src = images[index];
-        // set the alt attribute of the image element
-        img.alt = `Image ${index + 1}`;
-
-
-        // create an anchor element
-        const a = gridItem.querySelector('a');
-        // set the href attribute of the anchor element
-        a.href = links[index];
-    });
-    
-</script>
-
 </html>
