@@ -1,7 +1,7 @@
 [
   {
     "name": "Canvas",
-    "url": "https://canvas.instructure.com",
+    "url": "https://canvas.ou.edu",
     "icon": "https://www.instructure.com/sites/default/files/image/2021-12/canvas-favicon.svg"
   },
   {
@@ -33,5 +33,35 @@
     "name": "ChatGPT",
     "url": "https://chat.openai.com",
     "icon": "https://static.vecteezy.com/system/resources/previews/021/608/790/non_2x/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg"
+  },
+  {
+    "name": "Claude",
+    "url": "https://claude.ai",
+    "icon": "https://cdn.jsdelivr.net/gh/eceanes/favicon-packs/svgs/claude.svg"
+  },
+  {
+    "name": "ONE",
+    "url": "https://one.ou.edu",
+    "icon": "https://www.okstate.edu/icons/favicon.ico"
+  },
+  {
+    "name": "GitLab",
+    "url": "https://gitlab.com",
+    "icon": "https://gitlab.com/favicon.ico"
+  },
+  {
+    "name": "Zoom",
+    "url": "https://zoom.us",
+    "icon": "https://zoom.us/favicon.ico"
+  },
+  {
+    "name": "Google Drive",
+    "url": "https://drive.google.com",
+    "icon": "https://ssl.gstatic.com/images/branding/product/2x/drive_2020q4_512dp.png"
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://linkedin.com",
+    "icon": "https://static.licdn.com/aero-v1/sc/h/3auxid49mj7us77ibk4ijizlr"
   }
 ]
