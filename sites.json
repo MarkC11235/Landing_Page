@@ -1,67 +1,54 @@
 [
   {
     "name": "Canvas",
-    "url": "https://canvas.ou.edu",
-    "icon": "https://www.instructure.com/sites/default/files/image/2021-12/canvas-favicon.svg"
+    "url": "https://canvas.ou.edu"
   },
   {
     "name": "GitHub",
-    "url": "https://github.com",
-    "icon": "https://github.githubassets.com/favicons/favicon-dark.png"
+    "url": "https://github.com"
   },
   {
     "name": "YouTube",
-    "url": "https://youtube.com",
-    "icon": "https://www.youtube.com/s/desktop/dcdfd5b3/img/favicon_144x144.png"
+    "url": "https://youtube.com"
   },
   {
     "name": "Gmail",
-    "url": "https://mail.google.com",
-    "icon": "https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_512dp.png"
+    "url": "https://mail.google.com"
   },
   {
     "name": "Outlook",
-    "url": "https://outlook.office.com",
-    "icon": "https://res-1.cdn.office.net/assets/mail/purple/office365/outlook_64x64.png"
+    "url": "https://outlook.office.com"
   },
   {
     "name": "DeepSeek",
-    "url": "https://www.deepseek.com",
-    "icon": "https://www.deepseek.com/favicon.ico"
+    "url": "https://www.deepseek.com"
   },
   {
     "name": "ChatGPT",
-    "url": "https://chat.openai.com",
-    "icon": "https://static.vecteezy.com/system/resources/previews/021/608/790/non_2x/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg"
+    "url": "https://chat.openai.com"
   },
   {
     "name": "Claude",
-    "url": "https://claude.ai",
-    "icon": "https://cdn.jsdelivr.net/gh/eceanes/favicon-packs/svgs/claude.svg"
+    "url": "https://claude.ai"
   },
   {
     "name": "ONE",
-    "url": "https://one.ou.edu",
-    "icon": "https://www.okstate.edu/icons/favicon.ico"
+    "url": "https://one.ou.edu"
   },
   {
     "name": "GitLab",
-    "url": "https://gitlab.com",
-    "icon": "https://gitlab.com/favicon.ico"
+    "url": "https://gitlab.com"
   },
   {
     "name": "Zoom",
-    "url": "https://zoom.us",
-    "icon": "https://zoom.us/favicon.ico"
+    "url": "https://zoom.us"
   },
   {
     "name": "Google Drive",
-    "url": "https://drive.google.com",
-    "icon": "https://ssl.gstatic.com/images/branding/product/2x/drive_2020q4_512dp.png"
+    "url": "https://drive.google.com"
   },
   {
     "name": "LinkedIn",
-    "url": "https://linkedin.com",
-    "icon": "https://static.licdn.com/aero-v1/sc/h/3auxid49mj7us77ibk4ijizlr"
+    "url": "https://linkedin.com"
   }
 ]
