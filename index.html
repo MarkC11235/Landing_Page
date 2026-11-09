@@ -11,12 +11,26 @@
             box-sizing: border-box;
         }
 
+        :root {
+            /* Overwritten every minute by applySky() from the sun's position */
+            --sky-top: #07070d;
+            --sky-bottom: #0d0d16;
+            --glow-1: 88, 80, 233;
+            --glow-2: 59, 130, 246;
+            --glow-alpha: 0.08;
+            --accent: 99, 102, 241;
+            --sun-x: 20%;
+            --sun-y: 50%;
+        }
+
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #0d0d0d;
-            background-image: 
-                radial-gradient(ellipse at 20% 50%, rgba(88, 80, 233, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+            background-color: var(--sky-bottom);
+            background-image:
+                radial-gradient(ellipse at var(--sun-x) var(--sun-y), rgba(var(--glow-1), var(--glow-alpha)) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(var(--glow-2), calc(var(--glow-alpha) * 0.75)) 0%, transparent 50%),
+                linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+            background-attachment: fixed;
             color: rgba(255, 255, 255, 0.9);
             margin: 0;
             min-height: 100vh;
@@ -86,9 +100,9 @@
         }
 
         .search-bar input[type="text"]:focus {
-            border-color: rgba(99, 102, 241, 0.5);
+            border-color: rgba(var(--accent), 0.6);
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 3px rgba(var(--accent), 0.15);
         }
 
         .search-bar input[type="text"]::placeholder {
@@ -136,27 +150,43 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .logo-img {
-            width: 48px;
-            height: 48px;
+        /* Light tile behind each icon so dark logos (GitHub etc.) stay visible
+           on a dark page. No colour filter: icons keep their real colours. */
+        .logo-tile {
+            width: 52px;
+            height: 52px;
             margin-bottom: 10px;
-            filter: brightness(0) invert(0.85);
-            opacity: 0.9;
-            transition: all 0.25s ease;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.94);
+            display: grid;
+            place-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            transition: transform 0.25s ease;
         }
 
-        .logo-link:hover .logo-img {
-            opacity: 1;
-            filter: brightness(0) invert(1);
+        .logo-link:hover .logo-tile {
+            transform: scale(1.06);
         }
 
-        .logo-link span {
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .logo-fallback {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .logo-link > span {
             font-size: 0.85em;
-            opacity: 0.7;
+            opacity: 0.8;
             transition: opacity 0.25s ease;
         }
 
-        .logo-link:hover span {
+        .logo-link:hover > span {
             opacity: 1;
         }
 
@@ -227,6 +257,87 @@
         setInterval(updateTime, 1000);
         updateTime();
 
+        // ---- Time-of-day colours, driven by the sun's elevation ----
+        // Coarse location, only used to work out sunrise/sunset. Change if you move.
+        const LAT = 35.2, LON = -97.4;
+
+        // Preview any time with ?t=HH:MM (e.g. index.html?t=07:10)
+        function skyNow() {
+            const t = new URLSearchParams(location.search).get('t');
+            const now = new Date();
+            if (t && /^\d{1,2}:\d{2}$/.test(t)) {
+                const [h, m] = t.split(':').map(Number);
+                now.setHours(h, m, 0, 0);
+            }
+            return now;
+        }
+
+        // NOAA approximation. Returns elevation in degrees and hour angle
+        // (negative = morning, positive = afternoon).
+        function sunPosition(date) {
+            const rad = Math.PI / 180;
+            const start = Date.UTC(date.getUTCFullYear(), 0, 0);
+            const doy = Math.floor((date - start) / 864e5);
+            const utcMin = date.getUTCHours() * 60 + date.getUTCMinutes();
+            const g = 2 * Math.PI / 365 * (doy - 1 + (utcMin / 60 - 12) / 24);
+            const eqTime = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g)
+                - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+            const decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g)
+                - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g)
+                - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+            const solarMin = ((utcMin + eqTime + 4 * LON) % 1440 + 1440) % 1440;
+            const hourAngle = solarMin / 4 - 180;
+            const cosZenith = Math.sin(LAT * rad) * Math.sin(decl)
+                + Math.cos(LAT * rad) * Math.cos(decl) * Math.cos(hourAngle * rad);
+            const elevation = 90 - Math.acos(Math.max(-1, Math.min(1, cosZenith))) / rad;
+            return { elevation, hourAngle };
+        }
+
+        // Colour stops keyed by sun elevation. Each: sky top, sky bottom,
+        // glow 1, glow 2, accent (all RGB), glow strength.
+        const NIGHT = [-14, [7, 7, 13], [13, 13, 22], [88, 80, 233], [59, 130, 246], [99, 102, 241], 0.08];
+        const SKY = {
+            am: [
+                NIGHT,
+                [-6, [16, 20, 48],  [44, 40, 84],    [120, 110, 230], [230, 130, 150], [140, 130, 240], 0.14],
+                [0,  [36, 48, 98],  [150, 84, 104],  [255, 180, 120], [240, 130, 160], [255, 170, 130], 0.28],
+                [8,  [28, 78, 134], [110, 130, 160], [255, 214, 140], [120, 180, 240], [250, 200, 120], 0.20],
+                [25, [22, 84, 146], [58, 126, 180],  [255, 240, 190], [140, 200, 255], [130, 200, 255], 0.16]
+            ],
+            pm: [
+                NIGHT,
+                [-6, [20, 14, 44],  [58, 30, 72],    [170, 90, 200],  [240, 110, 90],  [190, 110, 220], 0.14],
+                [0,  [44, 30, 84],  [168, 78, 58],   [255, 140, 70],  [220, 80, 140],  [255, 150, 90],  0.28],
+                [8,  [30, 70, 124], [150, 116, 110], [255, 190, 110], [120, 160, 230], [255, 185, 110], 0.20],
+                [25, [22, 84, 146], [58, 126, 180],  [255, 240, 190], [140, 200, 255], [130, 200, 255], 0.16]
+            ]
+        };
+
+        function applySky() {
+            const { elevation, hourAngle } = sunPosition(skyNow());
+            const stops = hourAngle < 0 ? SKY.am : SKY.pm;
+            const e = Math.max(stops[0][0], Math.min(stops[stops.length - 1][0], elevation));
+            let i = 0;
+            while (i < stops.length - 2 && e > stops[i + 1][0]) i++;
+            const a = stops[i], b = stops[i + 1];
+            const f = (e - a[0]) / (b[0] - a[0]);
+            const mix = k => a[k].map((v, j) => Math.round(v + (b[k][j] - v) * f));
+            const root = document.documentElement.style;
+            root.setProperty('--sky-top', `rgb(${mix(1)})`);
+            root.setProperty('--sky-bottom', `rgb(${mix(2)})`);
+            root.setProperty('--glow-1', mix(3).join(', '));
+            root.setProperty('--glow-2', mix(4).join(', '));
+            root.setProperty('--accent', mix(5).join(', '));
+            root.setProperty('--glow-alpha', (a[6] + (b[6] - a[6]) * f).toFixed(3));
+            // The main glow follows the sun: left at sunrise, right at sunset.
+            const x = Math.max(8, Math.min(92, 50 + hourAngle / 90 * 42));
+            const y = Math.max(10, Math.min(100, 85 - elevation * 2));
+            root.setProperty('--sun-x', x.toFixed(1) + '%');
+            root.setProperty('--sun-y', y.toFixed(1) + '%');
+        }
+        applySky();
+        setInterval(applySky, 60000);
+
         fetch('sites.json')
             .then(res => res.json())
             .then(sites => {
@@ -238,18 +349,29 @@
                     link.target = '_blank';
                     link.rel = 'noopener noreferrer';
 
+                    // Optional "icon" in sites.json overrides the fetched favicon.
                     const domain = new URL(site.url).hostname;
-                    const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+                    const iconUrl = site.icon || `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
+                    const tile = document.createElement('div');
+                    tile.className = 'logo-tile';
 
                     const img = document.createElement('img');
                     img.src = iconUrl;
                     img.className = 'logo-img';
-                    img.alt = site.name;
+                    img.alt = '';
+                    img.onerror = () => {
+                        const letter = document.createElement('span');
+                        letter.className = 'logo-fallback';
+                        letter.textContent = site.name.charAt(0).toUpperCase();
+                        img.replaceWith(letter);
+                    };
+                    tile.appendChild(img);
 
                     const label = document.createElement('span');
                     label.textContent = site.name;
 
-                    link.appendChild(img);
+                    link.appendChild(tile);
                     link.appendChild(label);
                     grid.appendChild(link);
                 });
